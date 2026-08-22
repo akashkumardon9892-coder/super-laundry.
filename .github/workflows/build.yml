@@ -27,11 +27,7 @@ jobs:
         run: |
           BUILD_DIR=$(find . -name "build.gradle*" -exec dirname {} \; | head -n 1)
           cd "$BUILD_DIR"
-          
-          # Force headless mode to prevent KSP crash
-          echo "org.gradle.jvmargs=-Djava.awt.headless=true -Xmx4g" >> gradle.properties
-          
-          gradle assembleDebug --no-daemon --console=plain --stacktrace
+          ./gradlew assembleDebug --no-daemon --console=plain -Djava.awt.headless=true -Dorg.gradle.jvmargs="-Djava.awt.headless=true -Xmx4g"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
