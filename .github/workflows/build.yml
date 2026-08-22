@@ -12,7 +12,7 @@ jobs:
 
       - name: Unzip project
         run: |
-          unzip .github/workflows/super-laundry.zip
+          find . -name "*.zip" -exec unzip -o {} \;
           if [ -d "super-laundry" ]; then
             cp -rn super-laundry/* .
           fi
