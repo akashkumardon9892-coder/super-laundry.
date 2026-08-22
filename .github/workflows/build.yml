@@ -31,7 +31,7 @@ jobs:
           # Force headless mode to prevent KSP crash
           echo "org.gradle.jvmargs=-Djava.awt.headless=true -Xmx4g" >> gradle.properties
           
-          gradle assembleDebug --no-daemon --console=plain
+          gradle assembleDebug --no-daemon --console=plain --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
