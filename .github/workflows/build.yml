@@ -19,14 +19,24 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+    - name: Find and Fix gradlew Permission
+      run: |
+        find . -name "gradlew" -exec chmod +x {} +
 
     - name: Build Debug APK with headless mode
-      run: ./gradlew assembleDebug -Djava.awt.headless=true
+      run: |
+        GRADLEW_PATH=$(find . -name "gradlew" -print -quit)
+        if [ -n "$GRADLEW_PATH" ]; then
+          DIR_PATH=$(dirname "$GRADLEW_PATH")
+          cd "$DIR_PATH"
+          ./gradlew assembleDebug -Djava.awt.headless=true
+        else
+          echo "gradlew not found!"
+          exit 1
+        fi
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: app-debug
-        path: app/build/outputs/apk/debug/app-debug.apk
+        path: '**/app-debug.apk'
