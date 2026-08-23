@@ -19,24 +19,20 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Find and Fix gradlew Permission
+    - name: Generate Gradle Wrapper
       run: |
-        find . -name "gradlew" -exec chmod +x {} +
+        # Agar gradlew file nahi hai, toh GitHub khud gradle wrapper bana dega
+        if [ ! -f "gradlew" ]; then
+          gradle wrapper
+        fi
+        chmod +x gradlew
 
     - name: Build Debug APK with headless mode
       run: |
-        GRADLEW_PATH=$(find . -name "gradlew" -print -quit)
-        if [ -n "$GRADLEW_PATH" ]; then
-          DIR_PATH=$(dirname "$GRADLEW_PATH")
-          cd "$DIR_PATH"
-          ./gradlew assembleDebug -Djava.awt.headless=true
-        else
-          echo "gradlew not found!"
-          exit 1
-        fi
+        ./gradlew assembleDebug -Djava.awt.headless=true
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: app-debug
-        path: '**/app-debug.apk'
+        path: app/build/outputs/apk/debug/app-debug.apk
